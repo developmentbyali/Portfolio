@@ -133,27 +133,28 @@ class Portfolio {
     }
 
     setupSmoothScrolling() {
-        // Enhanced smooth scrolling for navigation links
+        // Enhanced smooth scrolling for navigation links (only for internal anchors)
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = anchor.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-                
-                if (targetElement) {
-                    const navbarHeight = this.navbar.offsetHeight;
-                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                    const offsetPosition = elementPosition - navbarHeight - 20;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-
-                    // Close mobile menu if open
-                    this.closeMobileMenu();
-                }
-            });
+            // Only apply to links that are not external (i.e., href starts with '#' and does not contain 'http')
+            const href = anchor.getAttribute('href');
+            if (href && href.startsWith('#') && href.length > 1) {
+                anchor.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        const navbarHeight = this.navbar.offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - navbarHeight - 20;
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                        // Close mobile menu if open
+                        this.closeMobileMenu();
+                    }
+                });
+            }
         });
     }
 
